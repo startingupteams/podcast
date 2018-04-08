@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "graphql-yoga": "1.8.0",
-    "prisma-binding": "1.5.16"
+    "prisma-binding": "1.5.16",
+    "telegraf": "^3.20.0"
   },
   "devDependencies": {
     "graphql-cli": "2.15.8",
