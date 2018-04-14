@@ -5,18 +5,28 @@
 # Model Types
 #
 
+type Podcast implements Node {
+  id: ID!
+  podcastId: Int!
+}
+
 type User implements Node {
   id: ID!
   telegramID: Int!
   firstname: String
   username: String
   languagecode: String
+  podcasts(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Podcast!]
 }
 
 
 #
 # Other Types
 #
+
+type AggregatePodcast {
+  count: Int!
+}
 
 type AggregateUser {
   count: Int!
@@ -37,11 +47,17 @@ scalar Long
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
+  createPodcast(data: PodcastCreateInput!): Podcast!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updatePodcast(data: PodcastUpdateInput!, where: PodcastWhereUniqueInput!): Podcast
   deleteUser(where: UserWhereUniqueInput!): User
+  deletePodcast(where: PodcastWhereUniqueInput!): Podcast
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertPodcast(where: PodcastWhereUniqueInput!, create: PodcastCreateInput!, update: PodcastUpdateInput!): Podcast!
   updateManyUsers(data: UserUpdateInput!, where: UserWhereInput!): BatchPayload!
+  updateManyPodcasts(data: PodcastUpdateInput!, where: PodcastWhereInput!): BatchPayload!
   deleteManyUsers(where: UserWhereInput!): BatchPayload!
+  deleteManyPodcasts(where: PodcastWhereInput!): BatchPayload!
 }
 
 enum MutationType {
@@ -82,10 +98,228 @@ type PageInfo {
   endCursor: String
 }
 
+"""
+A connection to a list of items.
+"""
+type PodcastConnection {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  A list of edges.
+  """
+  edges: [PodcastEdge]!
+  aggregate: AggregatePodcast!
+}
+
+input PodcastCreateInput {
+  podcastId: Int!
+}
+
+input PodcastCreateManyInput {
+  create: [PodcastCreateInput!]
+  connect: [PodcastWhereUniqueInput!]
+}
+
+"""
+An edge in a connection.
+"""
+type PodcastEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: Podcast!
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+}
+
+enum PodcastOrderByInput {
+  id_ASC
+  id_DESC
+  podcastId_ASC
+  podcastId_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type PodcastPreviousValues {
+  id: ID!
+  podcastId: Int!
+}
+
+type PodcastSubscriptionPayload {
+  mutation: MutationType!
+  node: Podcast
+  updatedFields: [String!]
+  previousValues: PodcastPreviousValues
+}
+
+input PodcastSubscriptionWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [PodcastSubscriptionWhereInput!]
+  """
+  Logical OR on all given filters.
+  """
+  OR: [PodcastSubscriptionWhereInput!]
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: PodcastWhereInput
+}
+
+input PodcastUpdateDataInput {
+  podcastId: Int
+}
+
+input PodcastUpdateInput {
+  podcastId: Int
+}
+
+input PodcastUpdateManyInput {
+  create: [PodcastCreateInput!]
+  connect: [PodcastWhereUniqueInput!]
+  disconnect: [PodcastWhereUniqueInput!]
+  delete: [PodcastWhereUniqueInput!]
+  update: [PodcastUpdateWithWhereUniqueNestedInput!]
+  upsert: [PodcastUpsertWithWhereUniqueNestedInput!]
+}
+
+input PodcastUpdateWithWhereUniqueNestedInput {
+  where: PodcastWhereUniqueInput!
+  data: PodcastUpdateDataInput!
+}
+
+input PodcastUpsertWithWhereUniqueNestedInput {
+  where: PodcastWhereUniqueInput!
+  update: PodcastUpdateDataInput!
+  create: PodcastCreateInput!
+}
+
+input PodcastWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [PodcastWhereInput!]
+  """
+  Logical OR on all given filters.
+  """
+  OR: [PodcastWhereInput!]
+  id: ID
+  """
+  All values that are not equal to given value.
+  """
+  id_not: ID
+  """
+  All values that are contained in given list.
+  """
+  id_in: [ID!]
+  """
+  All values that are not contained in given list.
+  """
+  id_not_in: [ID!]
+  """
+  All values less than the given value.
+  """
+  id_lt: ID
+  """
+  All values less than or equal the given value.
+  """
+  id_lte: ID
+  """
+  All values greater than the given value.
+  """
+  id_gt: ID
+  """
+  All values greater than or equal the given value.
+  """
+  id_gte: ID
+  """
+  All values containing the given string.
+  """
+  id_contains: ID
+  """
+  All values not containing the given string.
+  """
+  id_not_contains: ID
+  """
+  All values starting with the given string.
+  """
+  id_starts_with: ID
+  """
+  All values not starting with the given string.
+  """
+  id_not_starts_with: ID
+  """
+  All values ending with the given string.
+  """
+  id_ends_with: ID
+  """
+  All values not ending with the given string.
+  """
+  id_not_ends_with: ID
+  podcastId: Int
+  """
+  All values that are not equal to given value.
+  """
+  podcastId_not: Int
+  """
+  All values that are contained in given list.
+  """
+  podcastId_in: [Int!]
+  """
+  All values that are not contained in given list.
+  """
+  podcastId_not_in: [Int!]
+  """
+  All values less than the given value.
+  """
+  podcastId_lt: Int
+  """
+  All values less than or equal the given value.
+  """
+  podcastId_lte: Int
+  """
+  All values greater than the given value.
+  """
+  podcastId_gt: Int
+  """
+  All values greater than or equal the given value.
+  """
+  podcastId_gte: Int
+}
+
+input PodcastWhereUniqueInput {
+  id: ID
+  podcastId: Int
+}
+
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  podcasts(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Podcast]!
   user(where: UserWhereUniqueInput!): User
+  podcast(where: PodcastWhereUniqueInput!): Podcast
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  podcastsConnection(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PodcastConnection!
   """
   Fetches an object given its ID
   """
@@ -97,6 +331,7 @@ type Query {
 
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  podcast(where: PodcastSubscriptionWhereInput): PodcastSubscriptionPayload
 }
 
 """
@@ -119,6 +354,7 @@ input UserCreateInput {
   firstname: String
   username: String
   languagecode: String
+  podcasts: PodcastCreateManyInput
 }
 
 """
@@ -200,6 +436,7 @@ input UserUpdateInput {
   firstname: String
   username: String
   languagecode: String
+  podcasts: PodcastUpdateManyInput
 }
 
 input UserWhereInput {
@@ -452,6 +689,9 @@ input UserWhereInput {
   All values not ending with the given string.
   """
   languagecode_not_ends_with: String
+  podcasts_every: PodcastWhereInput
+  podcasts_some: PodcastWhereInput
+  podcasts_none: PodcastWhereInput
 }
 
 input UserWhereUniqueInput {

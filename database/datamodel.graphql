@@ -4,4 +4,10 @@ type User {
   firstname: String
   username: String
   languagecode: String
+  podcasts: [Podcast!]!
+}
+
+type Podcast{
+  id: ID! @unique
+  podcastId: Int! @unique
 }
