@@ -5,11 +5,12 @@
 # Model Types
 #
 
-type Post implements Node {
+type User implements Node {
   id: ID!
-  isPublished: Boolean!
-  title: String!
-  text: String!
+  telegramID: Int!
+  firstname: String
+  username: String
+  languagecode: String
 }
 
 
@@ -17,7 +18,7 @@ type Post implements Node {
 # Other Types
 #
 
-type AggregatePost {
+type AggregateUser {
   count: Int!
 }
 
@@ -35,12 +36,12 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createPost(data: PostCreateInput!): Post!
-  updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
-  deletePost(where: PostWhereUniqueInput!): Post
-  upsertPost(where: PostWhereUniqueInput!, create: PostCreateInput!, update: PostUpdateInput!): Post!
-  updateManyPosts(data: PostUpdateInput!, where: PostWhereInput!): BatchPayload!
-  deleteManyPosts(where: PostWhereInput!): BatchPayload!
+  createUser(data: UserCreateInput!): User!
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  deleteUser(where: UserWhereUniqueInput!): User
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput!): BatchPayload!
+  deleteManyUsers(where: UserWhereInput!): BatchPayload!
 }
 
 enum MutationType {
@@ -81,10 +82,27 @@ type PageInfo {
   endCursor: String
 }
 
+type Query {
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  user(where: UserWhereUniqueInput!): User
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  """
+  Fetches an object given its ID
+  """
+  node("""
+  The ID of an object
+  """
+  id: ID!): Node
+}
+
+type Subscription {
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+}
+
 """
 A connection to a list of items.
 """
-type PostConnection {
+type UserConnection {
   """
   Information to aid in pagination.
   """
@@ -92,68 +110,72 @@ type PostConnection {
   """
   A list of edges.
   """
-  edges: [PostEdge]!
-  aggregate: AggregatePost!
+  edges: [UserEdge]!
+  aggregate: AggregateUser!
 }
 
-input PostCreateInput {
-  isPublished: Boolean
-  title: String!
-  text: String!
+input UserCreateInput {
+  telegramID: Int!
+  firstname: String
+  username: String
+  languagecode: String
 }
 
 """
 An edge in a connection.
 """
-type PostEdge {
+type UserEdge {
   """
   The item at the end of the edge.
   """
-  node: Post!
+  node: User!
   """
   A cursor for use in pagination.
   """
   cursor: String!
 }
 
-enum PostOrderByInput {
+enum UserOrderByInput {
   id_ASC
   id_DESC
-  isPublished_ASC
-  isPublished_DESC
-  title_ASC
-  title_DESC
-  text_ASC
-  text_DESC
+  telegramID_ASC
+  telegramID_DESC
+  firstname_ASC
+  firstname_DESC
+  username_ASC
+  username_DESC
+  languagecode_ASC
+  languagecode_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
 }
 
-type PostPreviousValues {
+type UserPreviousValues {
   id: ID!
-  isPublished: Boolean!
-  title: String!
-  text: String!
+  telegramID: Int!
+  firstname: String
+  username: String
+  languagecode: String
 }
 
-type PostSubscriptionPayload {
+type UserSubscriptionPayload {
   mutation: MutationType!
-  node: Post
+  node: User
   updatedFields: [String!]
-  previousValues: PostPreviousValues
+  previousValues: UserPreviousValues
 }
 
-input PostSubscriptionWhereInput {
+input UserSubscriptionWhereInput {
   """
   Logical AND on all given filters.
   """
-  AND: [PostSubscriptionWhereInput!]
+  AND: [UserSubscriptionWhereInput!]
   """
   Logical OR on all given filters.
   """
-  OR: [PostSubscriptionWhereInput!]
+  OR: [UserSubscriptionWhereInput!]
   """
   The subscription event gets dispatched when it's listed in mutation_in
   """
@@ -170,24 +192,25 @@ input PostSubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: PostWhereInput
+  node: UserWhereInput
 }
 
-input PostUpdateInput {
-  isPublished: Boolean
-  title: String
-  text: String
+input UserUpdateInput {
+  telegramID: Int
+  firstname: String
+  username: String
+  languagecode: String
 }
 
-input PostWhereInput {
+input UserWhereInput {
   """
   Logical AND on all given filters.
   """
-  AND: [PostWhereInput!]
+  AND: [UserWhereInput!]
   """
   Logical OR on all given filters.
   """
-  OR: [PostWhereInput!]
+  OR: [UserWhereInput!]
   id: ID
   """
   All values that are not equal to given value.
@@ -241,136 +264,196 @@ input PostWhereInput {
   All values not ending with the given string.
   """
   id_not_ends_with: ID
-  isPublished: Boolean
+  telegramID: Int
   """
   All values that are not equal to given value.
   """
-  isPublished_not: Boolean
-  title: String
-  """
-  All values that are not equal to given value.
-  """
-  title_not: String
+  telegramID_not: Int
   """
   All values that are contained in given list.
   """
-  title_in: [String!]
+  telegramID_in: [Int!]
   """
   All values that are not contained in given list.
   """
-  title_not_in: [String!]
+  telegramID_not_in: [Int!]
   """
   All values less than the given value.
   """
-  title_lt: String
+  telegramID_lt: Int
   """
   All values less than or equal the given value.
   """
-  title_lte: String
+  telegramID_lte: Int
   """
   All values greater than the given value.
   """
-  title_gt: String
+  telegramID_gt: Int
   """
   All values greater than or equal the given value.
   """
-  title_gte: String
-  """
-  All values containing the given string.
-  """
-  title_contains: String
-  """
-  All values not containing the given string.
-  """
-  title_not_contains: String
-  """
-  All values starting with the given string.
-  """
-  title_starts_with: String
-  """
-  All values not starting with the given string.
-  """
-  title_not_starts_with: String
-  """
-  All values ending with the given string.
-  """
-  title_ends_with: String
-  """
-  All values not ending with the given string.
-  """
-  title_not_ends_with: String
-  text: String
+  telegramID_gte: Int
+  firstname: String
   """
   All values that are not equal to given value.
   """
-  text_not: String
+  firstname_not: String
   """
   All values that are contained in given list.
   """
-  text_in: [String!]
+  firstname_in: [String!]
   """
   All values that are not contained in given list.
   """
-  text_not_in: [String!]
+  firstname_not_in: [String!]
   """
   All values less than the given value.
   """
-  text_lt: String
+  firstname_lt: String
   """
   All values less than or equal the given value.
   """
-  text_lte: String
+  firstname_lte: String
   """
   All values greater than the given value.
   """
-  text_gt: String
+  firstname_gt: String
   """
   All values greater than or equal the given value.
   """
-  text_gte: String
+  firstname_gte: String
   """
   All values containing the given string.
   """
-  text_contains: String
+  firstname_contains: String
   """
   All values not containing the given string.
   """
-  text_not_contains: String
+  firstname_not_contains: String
   """
   All values starting with the given string.
   """
-  text_starts_with: String
+  firstname_starts_with: String
   """
   All values not starting with the given string.
   """
-  text_not_starts_with: String
+  firstname_not_starts_with: String
   """
   All values ending with the given string.
   """
-  text_ends_with: String
+  firstname_ends_with: String
   """
   All values not ending with the given string.
   """
-  text_not_ends_with: String
+  firstname_not_ends_with: String
+  username: String
+  """
+  All values that are not equal to given value.
+  """
+  username_not: String
+  """
+  All values that are contained in given list.
+  """
+  username_in: [String!]
+  """
+  All values that are not contained in given list.
+  """
+  username_not_in: [String!]
+  """
+  All values less than the given value.
+  """
+  username_lt: String
+  """
+  All values less than or equal the given value.
+  """
+  username_lte: String
+  """
+  All values greater than the given value.
+  """
+  username_gt: String
+  """
+  All values greater than or equal the given value.
+  """
+  username_gte: String
+  """
+  All values containing the given string.
+  """
+  username_contains: String
+  """
+  All values not containing the given string.
+  """
+  username_not_contains: String
+  """
+  All values starting with the given string.
+  """
+  username_starts_with: String
+  """
+  All values not starting with the given string.
+  """
+  username_not_starts_with: String
+  """
+  All values ending with the given string.
+  """
+  username_ends_with: String
+  """
+  All values not ending with the given string.
+  """
+  username_not_ends_with: String
+  languagecode: String
+  """
+  All values that are not equal to given value.
+  """
+  languagecode_not: String
+  """
+  All values that are contained in given list.
+  """
+  languagecode_in: [String!]
+  """
+  All values that are not contained in given list.
+  """
+  languagecode_not_in: [String!]
+  """
+  All values less than the given value.
+  """
+  languagecode_lt: String
+  """
+  All values less than or equal the given value.
+  """
+  languagecode_lte: String
+  """
+  All values greater than the given value.
+  """
+  languagecode_gt: String
+  """
+  All values greater than or equal the given value.
+  """
+  languagecode_gte: String
+  """
+  All values containing the given string.
+  """
+  languagecode_contains: String
+  """
+  All values not containing the given string.
+  """
+  languagecode_not_contains: String
+  """
+  All values starting with the given string.
+  """
+  languagecode_starts_with: String
+  """
+  All values not starting with the given string.
+  """
+  languagecode_not_starts_with: String
+  """
+  All values ending with the given string.
+  """
+  languagecode_ends_with: String
+  """
+  All values not ending with the given string.
+  """
+  languagecode_not_ends_with: String
 }
 
-input PostWhereUniqueInput {
+input UserWhereUniqueInput {
   id: ID
-}
-
-type Query {
-  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
-  post(where: PostWhereUniqueInput!): Post
-  postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
-  """
-  Fetches an object given its ID
-  """
-  node("""
-  The ID of an object
-  """
-  id: ID!): Node
-}
-
-type Subscription {
-  post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
 }

@@ -1,6 +1,7 @@
-type Post {
+type User {
   id: ID! @unique
-  isPublished: Boolean! @default(value: false)
-  title: String!
-  text: String!
+  telegramID: Int!
+  firstname: String
+  username: String
+  languagecode: String
 }
